@@ -6,6 +6,7 @@ import { SparklineCell } from ".";
 import {
   currentViewAtom,
   filtersAtom,
+  isTradeModalOpenAtom,
   rmiBenchmarkIndexAtom,
   rmiSelectedRegionAtom,
   rmiSelectedSecurityAtom,
@@ -17,6 +18,7 @@ import {
   showRatiosAtom,
   showVolatilityAtom,
   showYTDAtom,
+  tradeModalAssetAtom,
 } from "../atoms";
 import { convertToCAD, formatCurrency } from "../lib/currency-utils";
 import { bloombergColors, cn } from "../lib/theme-config";
@@ -52,6 +54,8 @@ export function MarketRow({
   const [, setSelectedRegion] = useAtom(rmiSelectedRegionAtom);
   const [, setSelectedSecurity] = useAtom(rmiSelectedSecurityAtom);
   const [, setBenchmarkIndex] = useAtom(rmiBenchmarkIndexAtom);
+  const [, setTradeModalOpen] = useAtom(isTradeModalOpenAtom);
+  const [, setTradeAsset] = useAtom(tradeModalAssetAtom);
 
   const colors = isDarkMode ? bloombergColors.dark : bloombergColors.light;
   const fixedColumnClass = "w-[120px] sm:w-[140px] whitespace-nowrap overflow-hidden text-ellipsis";
@@ -59,12 +63,12 @@ export function MarketRow({
   // Handle RMI cell click to navigate to RMI view
   const handleRmiClick = () => {
     // Set the region based on the current row's region
-    if (region === "americas") {
-      setSelectedRegion("americas");
-    } else if (region === "emea") {
-      setSelectedRegion("emea");
-    } else if (region === "asiapacific") {
-      setSelectedRegion("asiaPacific");
+    if (region === "blueChips") {
+      setSelectedRegion("blueChips");
+    } else if (region === "aiAssets") {
+      setSelectedRegion("aiAssets");
+    } else if (region === "memes") {
+      setSelectedRegion("memes");
     }
     // Set the selected security and default benchmark
     setSelectedSecurity(item.id);
@@ -80,7 +84,15 @@ export function MarketRow({
       >
         <div className="flex items-center gap-2">
           <span className={`text-[${colors.textSecondary}] text-xs`}>{item.num}</span>
-          <span className={`text-[${colors.accent}] text-xs`}>{item.id}</span>
+          <span
+            className={`text-[${colors.accent}] text-xs cursor-pointer hover:underline`}
+            onClick={() => {
+              setTradeAsset({ symbol: item.id, price: item.value });
+              setTradeModalOpen(true);
+            }}
+          >
+            {item.id}
+          </span>
         </div>
       </TableCell>
       <TableCell

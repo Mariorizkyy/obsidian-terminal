@@ -20,6 +20,9 @@ export const confirmModalPropsAtom = atom({
   onConfirm: () => {},
 });
 
+export const isTradeModalOpenAtom = atom(false);
+export const tradeModalAssetAtom = atom<{ symbol: string; price: number } | null>(null);
+
 // Writable filters atom
 export const writableFiltersAtom = atom(
   // Get function - read from individual atoms

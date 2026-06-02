@@ -1,5 +1,5 @@
 export const marketData = {
-  americas: [
+  blueChips: [
     {
       id: "BTC/USD",
       num: "11)",
@@ -73,7 +73,7 @@ export const marketData = {
       ytdCur: -3.12,
     },
   ],
-  emea: [
+  aiAssets: [
     {
       id: "UNI/USD",
       num: "21)",
@@ -162,7 +162,7 @@ export const marketData = {
       id: "LDO/USD",
       num: "28)",
       rmi: "□",
-      value: 2.20,
+      value: 2.2,
       change: 0.07,
       pctChange: 3.6,
       avat: -2.87,
@@ -171,7 +171,7 @@ export const marketData = {
       ytdCur: -0.91,
     },
   ],
-  asiaPacific: [
+  memes: [
     {
       id: "RITUAL/USD",
       num: "31)",

@@ -8,8 +8,11 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: "OBSIDIAN",
-  description: "Next.js Minimal Trader Terminal",
+  description:
+    "Virtual Capital. Real Market Data. Autonomous AI Agents. Every Decision Recorded On Ritual.",
 };
+
+import { Web3Provider } from "@/components/web3-provider";
 
 export default function RootLayout({
   children,
@@ -18,7 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans`}>{children}</body>
+      <body className={`${inter.variable} font-sans`}>
+        <Web3Provider>{children}</Web3Provider>
+      </body>
     </html>
   );
 }

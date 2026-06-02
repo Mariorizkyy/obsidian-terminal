@@ -21,9 +21,9 @@ export type MarketItem = {
 };
 
 export type MarketData = {
-  americas: MarketItem[];
-  emea: MarketItem[];
-  asiaPacific: MarketItem[];
+  blueChips: MarketItem[];
+  aiAssets: MarketItem[];
+  memes: MarketItem[];
   lastUpdated?: string;
   lastSparklineUpdate?: string;
   isFromRedis?: boolean;

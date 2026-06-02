@@ -15,7 +15,7 @@ export async function fetchAllMarketData(): Promise<MarketData> {
 
 /**
  * Fetches market data for a specific region
- * @param region The region to fetch data for (americas, emea, asiaPacific)
+ * @param region The region to fetch data for (blueChips, aiAssets, memes)
  */
 export async function fetchRegionMarketData(region: string): Promise<MarketItem[]> {
   const allData = await fetchAllMarketData();
@@ -30,7 +30,7 @@ export async function fetchMarketItemById(id: string): Promise<MarketItem | null
   const allData = await fetchAllMarketData();
 
   // Search through all regions for the item with matching ID
-  for (const region of ["americas", "emea", "asiaPacific"]) {
+  for (const region of ["blueChips", "aiAssets", "memes"]) {
     const items = allData[region] as MarketItem[];
     if (!items) continue;
 
@@ -49,7 +49,7 @@ export async function fetchMarketMovers(): Promise<MarketItem[]> {
   const movers: MarketItem[] = [];
 
   // Collect items with significant price changes from all regions
-  for (const region of ["americas", "emea", "asiaPacific"]) {
+  for (const region of ["blueChips", "aiAssets", "memes"]) {
     const items = allData[region] as MarketItem[];
     if (!items) continue;
 
@@ -73,7 +73,7 @@ export async function fetchVolatileMarkets(): Promise<MarketItem[]> {
   const volatileItems: MarketItem[] = [];
 
   // Collect items with high volatility from all regions
-  for (const region of ["americas", "emea", "asiaPacific"]) {
+  for (const region of ["blueChips", "aiAssets", "memes"]) {
     const items = allData[region] as MarketItem[];
     if (!items) continue;
 

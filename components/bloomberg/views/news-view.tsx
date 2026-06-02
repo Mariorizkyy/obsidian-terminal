@@ -1,148 +1,146 @@
 "use client";
 
-import { fetchFinancialNews } from "@/lib/alpha-vantage";
-import { ArrowLeft, ExternalLink, RefreshCw } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { usePortfolioStore } from "@/lib/store";
+import { ArrowLeft, Bot, Send, User } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { BloombergButton } from "../core/bloomberg-button";
-import { bloombergColors } from "../lib/theme-config";
 
-interface NewsItem {
-  title: string;
-  summary: string;
-  url: string;
-  time_published: string;
-  authors?: string[];
-  banner_image?: string;
-  source: string;
-  category_within_source?: string;
-  source_domain: string;
-  topics?: Array<{ topic: string; relevance_score: string }>;
-}
-
-interface NewsViewProps {
+interface AiChatViewProps {
   isDarkMode: boolean;
   onBack: () => void;
 }
 
-export default function NewsView({ isDarkMode, onBack }: NewsViewProps) {
-  const [news, setNews] = useState<NewsItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("market");
-
-  const colors = isDarkMode ? bloombergColors.dark : bloombergColors.light;
-
-  const fetchNews = useCallback(
-    async (query = searchTerm) => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const newsData = await fetchFinancialNews(query);
-        if (newsData) {
-          setNews(newsData);
-        } else {
-          setError("Could not fetch real news data. Showing sample news.");
-        }
-      } catch (err) {
-        setError("Failed to fetch news");
-      } finally {
-        setIsLoading(false);
-      }
+export default function AiChatView({ isDarkMode, onBack }: AiChatViewProps) {
+  const { aiPersonality } = usePortfolioStore();
+  const [messages, setMessages] = useState<{ role: "user" | "ai"; content: string }[]>([
+    {
+      role: "ai",
+      content: `OBSIDIAN Agent (${aiPersonality || "System"}) Initialized. Awaiting market queries...`,
     },
-    [searchTerm]
-  );
+  ]);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const formatPublishedTime = (timeString: string) => {
-    // The Alpha Vantage API returns dates in YYYYMMDDTHHMMSS format.
-    // We need to parse this custom format, as new Date() cannot handle it directly.
-    const alphaVantageFormat = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})$/;
-    const match = timeString.match(alphaVantageFormat);
-    let date: Date;
-    if (match) {
-      // If it matches the Alpha Vantage format, parse it manually.
-      const [, year, month, day, hour, minute, second] = match;
-      // Note: The month is 0-indexed in the JavaScript Date constructor (0-11).
-      date = new Date(
-        Number(year),
-        Number(month) - 1,
-        Number(day),
-        Number(hour),
-        Number(minute),
-        Number(second)
-      );
-    } else {
-      // Otherwise, assume it's a standard format.
-      date = new Date(timeString);
-    }
-    // Check if the resulting date is valid before formatting.
-    if (Number.isNaN(date.getTime())) {
-      return "Invalid Date";
-    }
-    return date.toLocaleString();
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Initial news fetch
   useEffect(() => {
-    fetchNews();
-  }, [fetchNews]);
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSend = () => {
+    if (!input.trim()) return;
+
+    const userMessage = input.trim();
+    setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
+    setInput("");
+    setIsTyping(true);
+
+    // Simulate AI response based on personality and Ritual precompile latency
+    setTimeout(() => {
+      let aiResponse = "";
+      if (aiPersonality === "conservative") {
+        aiResponse =
+          "[Radiant-AI] Based on risk-adjusted models, maintaining current Blue Chip allocation is recommended in this macro environment.";
+      } else if (aiPersonality === "aggressive") {
+        aiResponse =
+          "[Ritualist-AI] Momentum detected in AI sector. Recommending a 5% shift from Blue Chips to AI Assets to capture immediate alpha.";
+      } else if (aiPersonality === "degen") {
+        aiResponse = "[Ritty-AI] LFG! Social sentiment spiking on new memes. APE IN immediately!";
+      } else {
+        aiResponse = "[System] Market analysis complete. No action recommended.";
+      }
+
+      setMessages((prev) => [...prev, { role: "ai", content: aiResponse }]);
+      setIsTyping(false);
+    }, 1500);
+  };
 
   return (
-    <div className={`min-h-screen font-mono bg-[${colors.background}] text-[${colors.text}]`}>
+    <div className="flex flex-col h-[85vh] bg-[#050505]">
       {/* Header */}
-      <div className={`flex items-center gap-2 bg-[${colors.surface}] px-2 py-1`}>
-        <BloombergButton color="default" onClick={onBack}>
-          <ArrowLeft className="h-3 w-3 mr-1" />
-          BACK
+      <div className="flex items-center gap-4 border-b border-[#222] p-4 bg-[#0A0A0A]">
+        <BloombergButton
+          color="default"
+          onClick={onBack}
+          className="bg-[#111] border-[#333] hover:text-white px-3 py-1.5 rounded"
+        >
+          <ArrowLeft className="h-4 w-4 mr-1" /> BACK
         </BloombergButton>
-        <span className="text-sm font-bold">NEWS</span>
-        <div className="ml-auto flex items-center gap-2">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={`px-2 py-1 text-xs bg-[${colors.background}] border border-[${colors.border}] rounded-none`}
-            placeholder="Search news..."
-          />
-          <BloombergButton color="accent" onClick={() => fetchNews()} disabled={isLoading}>
-            {isLoading ? <RefreshCw className="h-3 w-3 animate-spin" /> : "SEARCH"}
-          </BloombergButton>
+        <div className="flex items-center gap-2">
+          <Bot className="h-5 w-5 text-emerald-500" />
+          <h2 className="text-white font-semibold uppercase tracking-wider text-sm">
+            OBSIDIAN AI Agent terminal
+          </h2>
+        </div>
+        <div className="ml-auto px-2 py-1 bg-emerald-950/30 text-emerald-500 text-xs font-bold rounded border border-emerald-900/50 uppercase">
+          {aiPersonality} Mode
         </div>
       </div>
 
-      {/* News Content */}
-      <div className="p-2">
-        {error && (
-          <div className={`mb-4 p-2 bg-[${colors.negative}] text-white text-xs`}>{error}</div>
-        )}
-        {news.length === 0 && !isLoading ? (
-          <div className="text-center py-8">No news articles found</div>
-        ) : (
-          <div className="space-y-4">
-            {news.map((item) => (
-              <div
-                key={item.title + item.url}
-                className={`p-3 border border-[${colors.border}] bg-[${colors.surface}]`}
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className={`text-sm font-bold text-[${colors.accent}]`}>{item.title}</h3>
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline"
-                  >
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-                </div>
-                <p className="text-xs mb-2">{item.summary}</p>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>{item.source}</span>
-                  <span>{formatPublishedTime(item.time_published)}</span>
-                </div>
+      {/* Chat History */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-4 font-mono">
+        {messages.map((msg, i) => (
+          <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+            <div
+              className={`max-w-[75%] rounded-xl p-4 flex gap-3 ${
+                msg.role === "user"
+                  ? "bg-blue-950/30 border border-blue-900/50 text-blue-100"
+                  : "bg-[#111] border border-[#333] text-emerald-100"
+              }`}
+            >
+              {msg.role === "user" ? (
+                <User className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
+              ) : (
+                <Bot className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+              )}
+              <div className="text-sm leading-relaxed">{msg.content}</div>
+            </div>
+          </div>
+        ))}
+        {isTyping && (
+          <div className="flex justify-start">
+            <div className="bg-[#111] border border-[#333] rounded-xl p-4 flex gap-3 text-emerald-500">
+              <Bot className="h-5 w-5 shrink-0" />
+              <div className="flex gap-1 items-center">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce"></div>
+                <div
+                  className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
+                <div
+                  className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce"
+                  style={{ animationDelay: "0.4s" }}
+                ></div>
               </div>
-            ))}
+            </div>
           </div>
         )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input Box */}
+      <div className="p-4 border-t border-[#222] bg-[#0A0A0A]">
+        <div className="flex gap-3">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            placeholder="Query market data or request trade analysis..."
+            className="flex-1 bg-[#111] border border-[#333] rounded-lg px-4 py-3 text-white font-mono text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+          />
+          <BloombergButton
+            color="accent"
+            onClick={handleSend}
+            disabled={!input.trim() || isTyping}
+            className="px-6 rounded-lg bg-emerald-950/50 text-emerald-500 border border-emerald-900 hover:bg-emerald-900/50 flex items-center gap-2 font-bold"
+          >
+            SEND <Send className="h-4 w-4" />
+          </BloombergButton>
+        </div>
       </div>
     </div>
   );

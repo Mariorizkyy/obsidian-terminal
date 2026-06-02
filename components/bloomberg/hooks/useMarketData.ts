@@ -116,7 +116,7 @@ export function useAllMarketData() {
 /**
  * Hook for fetching market data by region
  */
-export function useRegionMarketData(regions: string[] = ["americas", "emea", "asiaPacific"]) {
+export function useRegionMarketData(regions: string[] = ["blueChips", "aiAssets", "memes"]) {
   const [isRealTimeEnabled] = useAtom(isRealTimeEnabledAtom);
 
   // Use useQueries for multiple related queries
@@ -261,7 +261,7 @@ export function useMarketDataUpdates() {
     const newUpdatedSparklines: Record<string, boolean> = {};
 
     // Compare with previous data to highlight changes
-    for (const region of ["americas", "emea", "asiaPacific"]) {
+    for (const region of ["blueChips", "aiAssets", "memes"]) {
       if (!previousData || !currentData) continue;
 
       const prevRegionData = previousData[region] as MarketItem[] | undefined;
@@ -333,9 +333,9 @@ export function useMarketDataQuery() {
   const [isFromRedis] = useAtom(isFromRedisAtom);
 
   // Create selectors for specific data views
-  const getAmericasData = useCallback(() => getRegionData("americas"), [getRegionData]);
-  const getEmeaData = useCallback(() => getRegionData("emea"), [getRegionData]);
-  const getAsiaPacificData = useCallback(() => getRegionData("asiaPacific"), [getRegionData]);
+  const getBlueChipsData = useCallback(() => getRegionData("blueChips"), [getRegionData]);
+  const getAiAssetsData = useCallback(() => getRegionData("aiAssets"), [getRegionData]);
+  const getMemesData = useCallback(() => getRegionData("memes"), [getRegionData]);
 
   return {
     marketData,
@@ -351,9 +351,9 @@ export function useMarketDataQuery() {
     toggleRealTimeUpdates,
     refreshData,
     // Selectors for derived state
-    getAmericasData,
-    getEmeaData,
-    getAsiaPacificData,
+    getBlueChipsData,
+    getAiAssetsData,
+    getMemesData,
     getRegionData,
   };
 }

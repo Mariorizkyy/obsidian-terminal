@@ -1,5 +1,6 @@
 "use client";
 
+import { usePortfolioStore } from "@/lib/store";
 import { useAtom } from "jotai";
 import { useCallback } from "react";
 import {
@@ -9,13 +10,16 @@ import {
   confirmAndCloseModalAtom,
   confirmModalPropsAtom,
   isConfirmModalOpenAtom,
+  isTradeModalOpenAtom,
   isWatchlistOpenAtom,
   openConfirmModalAtom,
+  tradeModalAssetAtom,
   watchlistsAtom,
 } from "../atoms/terminal-ui";
 import { defaultFilters, resetFiltersAtom, writableFiltersAtom } from "../atoms/terminal-ui";
 import { ConfirmationModal } from "../core/confirmation-modal";
 import { ShortcutsHelp } from "../core/keyboard-shortcuts";
+import { TradeModal } from "../core/trade-modal";
 import { Watchlist } from "../core/watchlist";
 import { useTerminalUI } from "../hooks";
 import { useMarketDataQuery } from "../hooks";
@@ -26,6 +30,7 @@ import type { FilterState, MarketItem } from "../types";
 import MarketMoversView from "../views/market-movers-view";
 import { MarketView } from "../views/market-view";
 import NewsView from "../views/news-view";
+import { OnboardingView } from "../views/onboarding-view";
 import { RmiView } from "../views/rmi-view";
 import VolatilityView from "../views/volatility-view";
 
@@ -51,6 +56,8 @@ export default function BloombergTerminal() {
     handleHelpClick,
   } = useTerminalUI();
 
+  const { isInitialized } = usePortfolioStore();
+
   // Use Jotai atoms for state management
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useAtom(isConfirmModalOpenAtom);
   const [confirmModalProps, setConfirmModalProps] = useAtom(confirmModalPropsAtom);
@@ -59,6 +66,8 @@ export default function BloombergTerminal() {
   const [activeWatchlist, setActiveWatchlist] = useAtom(activeWatchlistAtom);
   const [filters, setFilters] = useAtom(writableFiltersAtom);
   const [, resetFilters] = useAtom(resetFiltersAtom);
+  const [isTradeModalOpen, setIsTradeModalOpen] = useAtom(isTradeModalOpenAtom);
+  const [tradeModalAsset] = useAtom(tradeModalAssetAtom);
 
   // Action atoms
   const [, openConfirmModal] = useAtom(openConfirmModalAtom);
@@ -72,18 +81,18 @@ export default function BloombergTerminal() {
   // Get all market indices for watchlist
   const allMarketIndices = useCallback(() => {
     const indices: string[] = [];
-    if (data?.americas) {
-      for (const item of data.americas) {
+    if (data?.blueChips) {
+      for (const item of data.blueChips) {
         indices.push(item.id);
       }
     }
-    if (data?.emea) {
-      for (const item of data.emea) {
+    if (data?.aiAssets) {
+      for (const item of data.aiAssets) {
         indices.push(item.id);
       }
     }
-    if (data?.asiaPacific) {
-      for (const item of data.asiaPacific) {
+    if (data?.memes) {
+      for (const item of data.memes) {
         indices.push(item.id);
       }
     }
@@ -188,6 +197,14 @@ export default function BloombergTerminal() {
     },
   ];
 
+  if (!isInitialized) {
+    return (
+      <TerminalLayout shortcuts={shortcuts}>
+        <OnboardingView isDarkMode={isDarkMode} />
+      </TerminalLayout>
+    );
+  }
+
   // Render the appropriate view based on currentView state
   if (currentView === "news") {
     return (
@@ -231,7 +248,7 @@ export default function BloombergTerminal() {
   if (currentView === "rmi") {
     return (
       <TerminalLayout shortcuts={shortcuts}>
-        <RmiView />
+        <RmiView onBack={handleBackFromView} isDarkMode={isDarkMode} />
       </TerminalLayout>
     );
   }
@@ -271,6 +288,13 @@ export default function BloombergTerminal() {
         isDarkMode={isDarkMode}
         marketIndices={allMarketIndices()}
         onSave={handleWatchlistSave}
+      />
+
+      <TradeModal
+        isOpen={isTradeModalOpen}
+        onClose={() => setIsTradeModalOpen(false)}
+        asset={tradeModalAsset}
+        isDarkMode={isDarkMode}
       />
 
       <ShortcutsHelp

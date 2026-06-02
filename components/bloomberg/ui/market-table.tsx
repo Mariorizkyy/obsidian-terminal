@@ -64,24 +64,24 @@ export function MarketTable({ data, isDarkMode }: MarketTableProps) {
       </TableHeader>
       <TableBody>
         <MarketSection
-          title="L1 / L2 NETWORKS"
-          items={data.americas || []}
+          title="BLUE CHIPS"
+          items={data.blueChips || []}
           sectionNum="1)"
           isDarkMode={isDarkMode}
           updatedCells={updatedCells}
           updatedSparklines={updatedSparklines}
         />
         <MarketSection
-          title="DEFI & INFRASTRUCTURE"
-          items={data.emea || []}
+          title="AI ASSETS"
+          items={data.aiAssets || []}
           sectionNum="2)"
           isDarkMode={isDarkMode}
           updatedCells={updatedCells}
           updatedSparklines={updatedSparklines}
         />
         <MarketSection
-          title="AI & EMERGING TECH"
-          items={data.asiaPacific || []}
+          title="MEME COINS"
+          items={data.memes || []}
           sectionNum="3)"
           isDarkMode={isDarkMode}
           updatedCells={updatedCells}

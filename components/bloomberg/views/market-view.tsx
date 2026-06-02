@@ -1,11 +1,12 @@
 "use client";
 
+import { ShieldAlert } from "lucide-react";
+import { AlphaFeed } from "../../../components/AlphaFeed";
 import { useMarketDataQuery } from "../hooks";
 import { bloombergColors } from "../lib/theme-config";
 import { MarketTable } from "../ui";
-import { AlphaFeed } from "../../../components/AlphaFeed";
 import { NewsPanel } from "../ui/news-panel";
-import { ShieldAlert } from "lucide-react";
+import { PortfolioPanel } from "../ui/portfolio-panel";
 
 type MarketViewProps = {
   isDarkMode: boolean;
@@ -30,7 +31,9 @@ export function MarketView({ isDarkMode }: MarketViewProps) {
     return (
       <div className="p-8 text-center glass-panel m-4 rounded-xl">
         <p className="neon-text-red font-mono text-xl">System Error Detected</p>
-        <p className="text-sm mt-2 text-gray-400">{error instanceof Error ? error.message : "Unknown error"}</p>
+        <p className="text-sm mt-2 text-gray-400">
+          {error instanceof Error ? error.message : "Unknown error"}
+        </p>
       </div>
     );
   }
@@ -47,7 +50,7 @@ export function MarketView({ isDarkMode }: MarketViewProps) {
         <div className="h-[400px]">
           <AlphaFeed />
         </div>
-        
+
         <div className="bg-[#0A0A0A] p-5 rounded-xl border border-[#222] shadow-sm flex-1 overflow-hidden flex flex-col">
           <h3 className="text-xs font-semibold flex items-center gap-2 mb-4 text-[#888] uppercase tracking-wider">
             Live Market Infrastructure
@@ -60,6 +63,8 @@ export function MarketView({ isDarkMode }: MarketViewProps) {
 
       {/* Sisi Kanan: Smart Auditor & Market Movers */}
       <div className="lg:col-span-3 flex flex-col gap-6">
+        <PortfolioPanel />
+
         {/* Smart Auditor Module */}
         <div className="bg-[#0A0A0A] p-5 rounded-xl border border-[#222] shadow-sm">
           <h3 className="text-xs font-semibold flex items-center gap-2 mb-4 text-[#888] uppercase tracking-wider">
@@ -68,12 +73,20 @@ export function MarketView({ isDarkMode }: MarketViewProps) {
           </h3>
           <div className="space-y-3">
             <div className="p-3 bg-[#111] border border-[#333] rounded-lg">
-              <p className="text-[10px] text-emerald-500 font-medium mb-1 tracking-wider uppercase">Audit: Secure</p>
-              <p className="text-xs text-[#888] leading-relaxed">No vulnerabilities detected in connected infrastructure.</p>
+              <p className="text-[10px] text-emerald-500 font-medium mb-1 tracking-wider uppercase">
+                Audit: Secure
+              </p>
+              <p className="text-xs text-[#888] leading-relaxed">
+                No vulnerabilities detected in connected infrastructure.
+              </p>
             </div>
             <div className="p-3 bg-[#111] border border-[#333] rounded-lg">
-              <p className="text-[10px] text-amber-500 font-medium mb-1 tracking-wider uppercase">Network Alert</p>
-              <p className="text-xs text-[#888] leading-relaxed">Elevated volatility in secondary liquidity pools.</p>
+              <p className="text-[10px] text-amber-500 font-medium mb-1 tracking-wider uppercase">
+                Network Alert
+              </p>
+              <p className="text-xs text-[#888] leading-relaxed">
+                Elevated volatility in secondary liquidity pools.
+              </p>
             </div>
           </div>
         </div>
@@ -84,16 +97,22 @@ export function MarketView({ isDarkMode }: MarketViewProps) {
             Market Activity
           </h3>
           <div className="space-y-1 flex-1">
-            {data?.americas?.slice(0, 5).map((item) => (
-              <div key={item.id} className="flex justify-between items-center py-2 px-3 hover:bg-[#111] rounded-md transition-colors cursor-pointer border border-transparent hover:border-[#333]">
+            {data?.blueChips?.slice(0, 5).map((item) => (
+              <div
+                key={item.id}
+                className="flex justify-between items-center py-2 px-3 hover:bg-[#111] rounded-md transition-colors cursor-pointer border border-transparent hover:border-[#333]"
+              >
                 <div>
                   <p className="text-sm font-medium text-white">{item.id}</p>
                   <p className="text-[10px] text-[#666] uppercase">{item.time}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium text-white">{item.value.toFixed(2)}</p>
-                  <p className={`text-[10px] font-medium ${item.pctChange >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
-                    {item.pctChange >= 0 ? '+' : ''}{item.pctChange.toFixed(2)}%
+                  <p
+                    className={`text-[10px] font-medium ${item.pctChange >= 0 ? "text-emerald-500" : "text-red-500"}`}
+                  >
+                    {item.pctChange >= 0 ? "+" : ""}
+                    {item.pctChange.toFixed(2)}%
                   </p>
                 </div>
               </div>

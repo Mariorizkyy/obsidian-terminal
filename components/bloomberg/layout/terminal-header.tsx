@@ -1,19 +1,20 @@
 "use client";
 
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import {
   Activity,
   AlertTriangle,
   BarChart2,
   Database,
   HelpCircle,
+  History,
+  MessageSquare,
   Moon,
-  Newspaper,
   RefreshCw,
   Sun,
   TrendingUp,
   Wifi,
 } from "lucide-react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { BloombergButton } from "../core/bloomberg-button";
 import { useMarketDataQuery } from "../hooks";
 import { bloombergColors } from "../lib/theme-config";
@@ -90,35 +91,67 @@ export function TerminalHeader({
         <Activity className="h-5 w-5 text-white" />
         OBSIDIAN
       </div>
-      
-      <BloombergButton color="red" onClick={onCancelClick} className="px-3 py-1.5 text-xs font-semibold rounded bg-red-950/50 text-red-400 border border-red-900/50 hover:bg-red-900/50 transition-colors">
+
+      <BloombergButton
+        color="red"
+        onClick={onCancelClick}
+        className="px-3 py-1.5 text-xs font-semibold rounded bg-red-950/50 text-red-400 border border-red-900/50 hover:bg-red-900/50 transition-colors"
+      >
         CANCEL
       </BloombergButton>
-      <BloombergButton color="accent" onClick={onNewClick} className="px-3 py-1.5 text-xs font-medium rounded bg-[#111] text-[#888] border border-[#333] hover:text-white transition-colors">
+      <BloombergButton
+        color="accent"
+        onClick={onNewClick}
+        className="px-3 py-1.5 text-xs font-medium rounded bg-[#111] text-[#888] border border-[#333] hover:text-white transition-colors"
+      >
         NEW
       </BloombergButton>
-      <BloombergButton color="accent" onClick={onBlancClick} className="px-3 py-1.5 text-xs font-medium rounded bg-[#111] text-[#888] border border-[#333] hover:text-white transition-colors">
+      <BloombergButton
+        color="accent"
+        onClick={onBlancClick}
+        className="px-3 py-1.5 text-xs font-medium rounded bg-[#111] text-[#888] border border-[#333] hover:text-white transition-colors"
+      >
         BLANC
       </BloombergButton>
-      <BloombergButton color="accent" onClick={onNewsClick} className="px-3 py-1.5 text-xs font-medium rounded bg-[#111] text-[#888] border border-[#333] hover:text-white transition-colors flex items-center gap-1">
-        <Newspaper className="h-3 w-3" />
-        NEWS
+      <BloombergButton
+        color="accent"
+        onClick={onNewsClick}
+        className="px-3 py-1.5 text-xs font-medium rounded bg-[#111] text-[#888] border border-[#333] hover:text-white transition-colors flex items-center gap-1"
+      >
+        <MessageSquare className="h-3 w-3" />
+        AI CHAT
       </BloombergButton>
-      <BloombergButton color="accent" onClick={onMoversClick} className="px-3 py-1.5 text-xs font-medium rounded bg-[#111] text-[#888] border border-[#333] hover:text-white transition-colors flex items-center gap-1">
+      <BloombergButton
+        color="accent"
+        onClick={onMoversClick}
+        className="px-3 py-1.5 text-xs font-medium rounded bg-[#111] text-[#888] border border-[#333] hover:text-white transition-colors flex items-center gap-1"
+      >
         <TrendingUp className="h-3 w-3" />
         MOVERS
       </BloombergButton>
-      <BloombergButton color="accent" onClick={onVolatilityClick} className="px-3 py-1.5 text-xs font-medium rounded bg-[#111] text-[#888] border border-[#333] hover:text-white transition-colors flex items-center gap-1">
+      <BloombergButton
+        color="accent"
+        onClick={onVolatilityClick}
+        className="px-3 py-1.5 text-xs font-medium rounded bg-[#111] text-[#888] border border-[#333] hover:text-white transition-colors flex items-center gap-1"
+      >
         <BarChart2 className="h-3 w-3" />
         VOLATILITY
       </BloombergButton>
-      <BloombergButton color="accent" onClick={onRmiClick} className="px-3 py-1.5 text-xs font-medium rounded bg-[#111] text-[#888] border border-[#333] hover:text-white transition-colors flex items-center gap-1">
-        <Activity className="h-3 w-3" />
-        RMI
+      <BloombergButton
+        color="accent"
+        onClick={onRmiClick}
+        className="px-3 py-1.5 text-xs font-medium rounded bg-[#111] text-[#888] border border-[#333] hover:text-white transition-colors flex items-center gap-1"
+      >
+        <History className="h-3 w-3" />
+        HISTORY
       </BloombergButton>
 
       <div className="flex gap-2 ml-4">
-        <BloombergButton color="accent" onClick={onHelpClick} className="px-2 py-1.5 rounded bg-transparent text-[#666] hover:text-white transition-colors">
+        <BloombergButton
+          color="accent"
+          onClick={onHelpClick}
+          className="px-2 py-1.5 rounded bg-transparent text-[#666] hover:text-white transition-colors"
+        >
           <HelpCircle className="h-4 w-4" />
         </BloombergButton>
       </div>
@@ -130,14 +163,23 @@ export function TerminalHeader({
 
       {/* Control Buttons */}
       <div className="ml-auto flex items-center gap-3">
-        <BloombergButton color="accent" onClick={refreshData} disabled={isLoading} className="text-[#666] hover:text-white transition-colors">
-          {isLoading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+        <BloombergButton
+          color="accent"
+          onClick={refreshData}
+          disabled={isLoading}
+          className="text-[#666] hover:text-white transition-colors"
+        >
+          {isLoading ? (
+            <RefreshCw className="h-4 w-4 animate-spin" />
+          ) : (
+            <RefreshCw className="h-4 w-4" />
+          )}
         </BloombergButton>
         <BloombergButton
           color={isRealTimeEnabled ? "red" : "green"}
           onClick={toggleRealTimeUpdates}
           disabled={isLoading}
-          className={`px-3 py-1.5 text-xs font-bold rounded border transition-colors ${isRealTimeEnabled ? 'bg-red-950/30 text-red-500 border-red-900/50' : 'bg-emerald-950/30 text-emerald-500 border-emerald-900/50'}`}
+          className={`px-3 py-1.5 text-xs font-bold rounded border transition-colors ${isRealTimeEnabled ? "bg-red-950/30 text-red-500 border-red-900/50" : "bg-emerald-950/30 text-emerald-500 border-emerald-900/50"}`}
         >
           {isRealTimeEnabled ? "LIVE: ON" : "LIVE: OFF"}
         </BloombergButton>

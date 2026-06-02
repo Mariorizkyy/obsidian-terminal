@@ -53,9 +53,9 @@ interface VolatilityViewProps {
   isDarkMode: boolean;
   onBack: () => void;
   marketData: {
-    americas: MarketIndex[];
-    emea: MarketIndex[];
-    asiaPacific: MarketIndex[];
+    blueChips: MarketIndex[];
+    aiAssets: MarketIndex[];
+    memes: MarketIndex[];
     lastUpdated?: string;
   };
   onRefresh: () => void;
@@ -76,9 +76,9 @@ export default function VolatilityView({
   );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [showRegions, setShowRegions] = useState<Record<string, boolean>>({
-    americas: true,
-    emea: true,
-    asiaPacific: true,
+    blueChips: true,
+    aiAssets: true,
+    memes: true,
   });
 
   const colors = isDarkMode ? bloombergColors.dark : bloombergColors.light;
@@ -88,9 +88,9 @@ export default function VolatilityView({
     const calculateVolatilityData = () => {
       const result: VolatilityData[] = [];
 
-      // Process Americas
-      if (marketData.americas) {
-        for (const index of marketData.americas) {
+      // Process Blue Chips
+      if (marketData.blueChips) {
+        for (const index of marketData.blueChips) {
           // Generate realistic volatility metrics based on existing data
           const historicalVol = generateHistoricalVolatility(index);
           const impliedVol = historicalVol * (1 + (Math.random() * 0.4 - 0.2)); // IV is usually close to HV but can vary
@@ -102,7 +102,7 @@ export default function VolatilityView({
 
           result.push({
             id: index.id,
-            region: "Americas",
+            region: "Blue Chips",
             historicalVol,
             impliedVol,
             volRatio,
@@ -121,9 +121,9 @@ export default function VolatilityView({
         }
       }
 
-      // Process EMEA
-      if (marketData.emea) {
-        for (const index of marketData.emea) {
+      // Process AI Assets
+      if (marketData.aiAssets) {
+        for (const index of marketData.aiAssets) {
           const historicalVol = generateHistoricalVolatility(index);
           const impliedVol = historicalVol * (1 + (Math.random() * 0.4 - 0.2));
           const volRatio = historicalVol / (10 + Math.random() * 5);
@@ -134,7 +134,7 @@ export default function VolatilityView({
 
           result.push({
             id: index.id,
-            region: "EMEA",
+            region: "AI Assets",
             historicalVol,
             impliedVol,
             volRatio,
@@ -153,9 +153,9 @@ export default function VolatilityView({
         }
       }
 
-      // Process Asia/Pacific
-      if (marketData.asiaPacific) {
-        for (const index of marketData.asiaPacific) {
+      // Process Memes
+      if (marketData.memes) {
+        for (const index of marketData.memes) {
           const historicalVol = generateHistoricalVolatility(index);
           const impliedVol = historicalVol * (1 + (Math.random() * 0.4 - 0.2));
           const volRatio = historicalVol / (10 + Math.random() * 5);
@@ -166,7 +166,7 @@ export default function VolatilityView({
 
           result.push({
             id: index.id,
-            region: "Asia/Pacific",
+            region: "Memes",
             historicalVol,
             impliedVol,
             volRatio,
@@ -376,30 +376,30 @@ export default function VolatilityView({
         <span>Regions:</span>
         <div className="flex items-center gap-1">
           <Checkbox
-            id="americas-vol"
-            checked={showRegions.americas}
-            onCheckedChange={() => handleRegionToggle("americas")}
+            id="blueChips-vol"
+            checked={showRegions.blueChips}
+            onCheckedChange={() => handleRegionToggle("blueChips")}
             className="h-3 w-3 rounded-none border-gray-500 data-[state=checked]:bg-gray-500"
           />
-          <label htmlFor="americas-vol">Americas</label>
+          <label htmlFor="blueChips-vol">Blue Chips</label>
         </div>
         <div className="flex items-center gap-1">
           <Checkbox
-            id="emea-vol"
-            checked={showRegions.emea}
-            onCheckedChange={() => handleRegionToggle("emea")}
+            id="aiAssets-vol"
+            checked={showRegions.aiAssets}
+            onCheckedChange={() => handleRegionToggle("aiAssets")}
             className="h-3 w-3 rounded-none border-gray-500 data-[state=checked]:bg-gray-500"
           />
-          <label htmlFor="emea-vol">EMEA</label>
+          <label htmlFor="aiAssets-vol">AI Assets</label>
         </div>
         <div className="flex items-center gap-1">
           <Checkbox
-            id="asiaPacific-vol"
-            checked={showRegions.asiaPacific}
-            onCheckedChange={() => handleRegionToggle("asiaPacific")}
+            id="memes-vol"
+            checked={showRegions.memes}
+            onCheckedChange={() => handleRegionToggle("memes")}
             className="h-3 w-3 rounded-none border-gray-500 data-[state=checked]:bg-gray-500"
           />
-          <label htmlFor="asiaPacific-vol">Asia/Pacific</label>
+          <label htmlFor="memes-vol">Memes</label>
         </div>
 
         <span className="ml-4">Sort By:</span>

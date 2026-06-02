@@ -42,9 +42,9 @@ interface MarketMoversViewProps {
   isDarkMode: boolean;
   onBack: () => void;
   marketData: {
-    americas: MarketIndex[];
-    emea: MarketIndex[];
-    asiaPacific: MarketIndex[];
+    blueChips: MarketIndex[];
+    aiAssets: MarketIndex[];
+    memes: MarketIndex[];
     lastUpdated?: string;
   };
   onRefresh: () => void;
@@ -63,9 +63,9 @@ export default function MarketMoversView({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [minMove, setMinMove] = useState<number>(0);
   const [showRegions, setShowRegions] = useState<Record<string, boolean>>({
-    americas: true,
-    emea: true,
-    asiaPacific: true,
+    blueChips: true,
+    aiAssets: true,
+    memes: true,
   });
 
   const colors = isDarkMode ? bloombergColors.dark : bloombergColors.light;
@@ -75,21 +75,21 @@ export default function MarketMoversView({
     // Combine all regions into a single array
     const allIndices: MarketIndex[] = [];
 
-    if (marketData.americas) {
-      for (const index of marketData.americas) {
-        allIndices.push({ ...index, region: "Americas" });
+    if (marketData.blueChips) {
+      for (const index of marketData.blueChips) {
+        allIndices.push({ ...index, region: "Blue Chips" });
       }
     }
 
-    if (marketData.emea) {
-      for (const index of marketData.emea) {
-        allIndices.push({ ...index, region: "EMEA" });
+    if (marketData.aiAssets) {
+      for (const index of marketData.aiAssets) {
+        allIndices.push({ ...index, region: "AI Assets" });
       }
     }
 
-    if (marketData.asiaPacific) {
-      for (const index of marketData.asiaPacific) {
-        allIndices.push({ ...index, region: "Asia/Pacific" });
+    if (marketData.memes) {
+      for (const index of marketData.memes) {
+        allIndices.push({ ...index, region: "Memes" });
       }
     }
 
@@ -200,30 +200,30 @@ export default function MarketMoversView({
         <span>Regions:</span>
         <div className="flex items-center gap-1">
           <Checkbox
-            id="americas"
-            checked={showRegions.americas}
-            onCheckedChange={() => handleRegionToggle("americas")}
+            id="blueChips"
+            checked={showRegions.blueChips}
+            onCheckedChange={() => handleRegionToggle("blueChips")}
             className="h-3 w-3 rounded-none border-gray-500 data-[state=checked]:bg-gray-500"
           />
-          <label htmlFor="americas">Americas</label>
+          <label htmlFor="blueChips">Blue Chips</label>
         </div>
         <div className="flex items-center gap-1">
           <Checkbox
-            id="emea"
-            checked={showRegions.emea}
-            onCheckedChange={() => handleRegionToggle("emea")}
+            id="aiAssets"
+            checked={showRegions.aiAssets}
+            onCheckedChange={() => handleRegionToggle("aiAssets")}
             className="h-3 w-3 rounded-none border-gray-500 data-[state=checked]:bg-gray-500"
           />
-          <label htmlFor="emea">EMEA</label>
+          <label htmlFor="aiAssets">AI Assets</label>
         </div>
         <div className="flex items-center gap-1">
           <Checkbox
-            id="asiaPacific"
-            checked={showRegions.asiaPacific}
-            onCheckedChange={() => handleRegionToggle("asiaPacific")}
+            id="memes"
+            checked={showRegions.memes}
+            onCheckedChange={() => handleRegionToggle("memes")}
             className="h-3 w-3 rounded-none border-gray-500 data-[state=checked]:bg-gray-500"
           />
-          <label htmlFor="asiaPacific">Asia/Pacific</label>
+          <label htmlFor="memes">Memes</label>
         </div>
 
         <span className="ml-4">Min % Move:</span>
